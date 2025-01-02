@@ -1,0 +1,28 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Ana sayfa {% endblock %} 
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="content" >
+
+        <div class="p-5 d-flex row col-6">
+        
+
+            <h1>Üretilen Grafik</h1>
+            {% for plot in plots %}
+                <div class="m-5">
+                    <img src="{% static plot %}" alt="Graph" style="width:600px;height:auto;">
+                </div>
+            {% endfor %}
+            
+
+        </div>    
+
+    </div>
+
+{% endblock %}
+
+<!-- <div class="content"></div> -->

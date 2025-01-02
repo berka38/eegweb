@@ -1,0 +1,454 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Ana sayfa {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+			
+	<div class="content">
+		<div class="panel-header bg-primary-gradient">
+			<div class="page-inner py-5">
+				<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+					<div>
+						<h2 class="text-white pb-2 fw-bold row">Bakiyeniz: <p class="ml-2 h2 fw-bold text-success">₺ {{ user_balance }}</p></h2>
+						<h5 class="text-white op-7 mb-2">Ücretsiz Sinyal İşleme Sistemi</h5>
+					</div>
+					<div class="ml-md-auto py-2 py-md-0">
+
+
+
+
+
+
+						
+						<div class="d-flex col-12">
+
+							<a href="/admin" class="btn btn-white btn-border btn-round mr-2">Admin</a>
+	
+	
+							<button type="button" class="btn btn-success btn-round ml-2" data-toggle="modal" data-target="#incomeModal">
+								<i class="fas fa-plus"></i> Sinyal Ekle
+							</button>
+
+						</div>
+
+
+						
+
+
+
+
+
+						
+						
+						<!-- Kazanç Ekle Modal -->
+						<div class="modal fade" id="incomeModal" tabindex="-1" role="dialog" aria-labelledby="incomeModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<form id="spendForm" method="post" enctype="multipart/form-data">
+										{% csrf_token %}
+										<input type="hidden" name="form_type" value="UploadFileEEG">
+										<div class="modal-header">
+											<h5 class="modal-title" id="incomeModalLabel">Kazanç Ekle</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+												<span aria-hidden="true">&times;</span>
+											</button>
+										</div>
+										<div class="modal-body">
+											<!-- Hata mesajı alanı -->
+											<div id="errorAlert" class="alert alert-danger" style="display:none;">
+												<strong>Hata!</strong> <span id="errorMessage"></span>
+											</div>
+						
+											<div class="form-group">
+												<label for="Title">Açıklama</label>
+												<input type="text" class="form-control" id="Title" name="Title" required>
+											</div>
+
+
+											<div class="form-group">
+												<div class="mb-3">
+													<label for="formFile" class="form-label">Default file input example</label>
+													<input class="form-control" type="file" id="formFile" name="formFile" accept=".txt" required>
+												</div>
+											</div>
+
+
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+											<button type="submit" class="btn btn-primary">Kaydet</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+
+						
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="page-inner mt--5">
+			
+
+			<div class="row d-flex justify-content-between">
+			
+				<div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-round">
+						<div class="card-body ">
+							<div class="row">
+								<div class="col-5">
+									<div class="icon-big text-center">
+										<i class="fas fa-cookie-bite text-primary"></i>
+									</div>
+								</div>
+								<div class="col-7 col-stats">
+									<div class="numbers">
+										
+										<div class="row">
+											<div class="row">
+												<div class="col-12">
+														<p class="">Toplam data</p>
+												</div>
+												<div class="col-12 col-stats">
+													<h4 class="card-title">{{ totalData }}</h4>
+												</div>
+											</div>
+	
+											
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+	
+				<div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-round">
+						<div class="card-body ">
+							<div class="row">
+								<div class="col-5">
+									<div class="icon-big text-center">
+										<i class="fas fa-grin-beam text-success"></i>
+									</div>
+								</div>
+								<div class="col-7 col-stats">
+									<div class="numbers">
+
+
+
+										<div class="row">
+											<div class="row">
+												<div class="col-12">
+														<p class="">Toplam Kullanıcı</p>
+												</div>
+												<div class="col-12 col-stats">
+													<h4 class="card-title">{{ usersCount }}</h4>
+												</div>
+											</div>
+	
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<div class="col-sm-6 col-md-4">
+					<div class="card card-stats card-round">
+						<div class="card-body ">
+							<div class="row">
+								<div class="col-5">
+									<div class="icon-big text-center">
+										<i class="fas fa-grin-beam text-success"></i>
+									</div>
+								</div>
+								<div class="col-7 col-stats">
+									<div class="numbers">
+
+
+
+										<div class="row">
+											<div class="row">
+												<div class="col-12">
+														<p class="">Aktif Kullanıcı</p>
+												</div>
+												<div class="col-12 col-stats">
+													<h4 class="card-title">{{ usersCount }}</h4>
+												</div>
+											</div>
+	
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- jobs -->
+
+			<div class="row row-card-no-pd">
+				<div class="col-md-12">
+					<div class="card">
+						<div class="card-header">
+							<div class="d-flex align-items-center">
+								<h4 class="card-title">Datalar</h4>
+								
+							</div>
+						</div>
+						<div class="card-body">
+							<!-- Modal -->
+
+							
+
+							<div class="table-responsive">
+								<table id="add-row" class="display table table-striped table-hover" >
+									<thead>
+										<tr>
+											<th>Durum</th>
+											<th>Başlık</th>
+											<th>Dosya yolu</th>
+											<th>Tarih</th>
+											<th style="width: 10%"></th>
+										</tr>
+									</thead>
+									<tfoot>
+										<tr>
+											<th>Durum</th>
+											<th>Başlık</th>
+											<th>Dosya yolu</th>
+											<th>Tarih</th>
+											<th></th>
+										</tr>
+									</tfoot>
+									<tbody>
+
+										{% for file in files %}
+										<tr>
+											<td>
+													<i class="fas fa-check text-success"></i></td>
+											<td>{{ file.Title }}</td>
+											<td>{{ file.file }}</td>
+											<td>{{ file.uploaded_at }}</td>
+											<td>
+												<div class="form-button-action">
+
+													<div class="">
+													</div>
+
+													<button type="button" title="" class="btn btn-link btn-primary btn-lg" data-toggle="modal" data-target="#editJobModal{{ job.id }}" data-original-title="Edit Task">
+														<i class="fa fa-edit"></i>
+													</button>
+													
+													<!-- Modal -->
+													
+
+													<button type="button" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
+														<i class="fa fa-times"></i>
+													</button>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+			
+		</div>
+	</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+	<!-- Atlantis DEMO methods, don't include it in your project! -->
+	<script src="/static/assets/js/setting-demo.js"></script>
+	<script src="/static/assets/js/demo.js"></script>
+	<script src="/static/assets/js/setting-demo2.js"></script>
+
+	<script>
+
+
+
+
+
+		$('#jobform').submit(function(e) {
+			e.preventDefault();  // Sayfa yenilenmesini engelle
+			var formData = $(this).serialize();  // Form verilerini al
+			$.ajax({
+				type: "POST",
+				url: "",  // Formun gönderileceği view URL'si
+				data: formData,
+				success: function(response) {
+					alert('Güncelleme başarılı!');
+					location.reload();  // Sayfayı yenileyerek güncel veriyi göster
+				},
+				error: function(error) {
+					alert('Bir hata oluştu.');
+				}
+			});
+		});
+
+
+
+
+
+
+
+
+
+
+		Circles.create({
+			id:'circles-1',
+			radius:45,
+			value:60,
+			maxValue:100,
+			width:7,
+			text: 5,
+			colors:['#f1f1f1', '#FF9E27'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+		Circles.create({
+			id:'circles-2',
+			radius:45,
+			value:70,
+			maxValue:100,
+			width:7,
+			text: 36,
+			colors:['#f1f1f1', '#2BB930'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+		Circles.create({
+			id:'circles-3',
+			radius:45,
+			value:40,
+			maxValue:100,
+			width:7,
+			text: 12,
+			colors:['#f1f1f1', '#F25961'],
+			duration:400,
+			wrpClass:'circles-wrp',
+			textClass:'circles-text',
+			styleWrapper:true,
+			styleText:true
+		})
+
+		var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+		var mytotalIncomeChart = new Chart(totalIncomeChart, {
+			type: 'bar',
+			data: {
+				labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+				datasets : [{
+					label: "Total Income",
+					backgroundColor: '#ff9e27',
+					borderColor: 'rgb(23, 125, 255)',
+					data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				legend: {
+					display: false,
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							display: false //this will remove only the label
+						},
+						gridLines : {
+							drawBorder: false,
+							display : false
+						}
+					}],
+					xAxes : [ {
+						gridLines : {
+							drawBorder: false,
+							display : false
+						}
+					}]
+				},
+			}
+		});
+
+		$('#lineChart').sparkline([105,103,123,100,95,105,115], {
+			type: 'line',
+			height: '70',
+			width: '100%',
+			lineWidth: '2',
+			lineColor: '#ffa534',
+			fillColor: 'rgba(255, 165, 52, .14)'
+		});
+
+		
+
+		// harcama ekleme
+
+		
+		$.notify({
+			icon: 'flaticon-alarm-1',
+			title: 'Karaca Yazılım',
+			message: 'ad',
+		},{
+			type: 'success',
+			placement: {
+				from: "bottom",
+				align: "right"
+			},
+			time: 1000,
+		});
+
+
+
+
+
+	</script>
+
+{% endblock javascripts %}
