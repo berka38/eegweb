@@ -2,27 +2,192 @@
 {% load static %}
 {% block title %} Ana sayfa {% endblock %} 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+
+
+<style>
+    .content {
+        margin: 20px auto;
+        max-width: 1200px;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #ffffff;
+        font-weight: bold;
+    }
+    .graph-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        justify-content: center;
+    }
+    .graph-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+    }
+    .graph-card:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    }
+    .graph-card img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    /* Tam ekran görsel için stil */
+    .fullscreen-img {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1050;
+        display: none;
+    }
+    .fullscreen-img img {
+        max-width: 90%;
+        max-height: 90%;
+        border-radius: 10px;
+        transition: transform 0.2s ease-in-out;
+    }
+    .toolbar {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 10px;
+        z-index: 1100;
+    }
+    .toolbar button {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        color: white;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    .toolbar button:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+</style>
+
+{% endblock stylesheets %}
 
 {% block content %}
 
-    <div class="content" >
-
-        <div class="p-5 d-flex row col-6">
-        
-
-            <h1>Üretilen Grafik</h1>
-            {% for plot in plots %}
-                <div class="m-5">
-                    <img src="{% static plot %}" alt="Graph" style="width:600px;height:auto;">
-                </div>
-            {% endfor %}
-            
-
-        </div>    
-
+<div class="content">
+    <h1>Üretilen Grafik</h1>
+    <div class="graph-container">
+        {% for plot in plots %}
+        <div class="graph-card">
+            <img src="{% static plot %}" alt="Graph" onclick="showFullscreen(this)">
+        </div>
+        {% endfor %}
     </div>
+</div>
+
+<!-- Tam ekran görüntüleme divi -->
+<div class="fullscreen-img" id="fullscreenImg">
+    <img src="" alt="Fullscreen Graph" id="fullscreenImage">
+    <div class="toolbar">
+        <button onclick="enableDrawing()">Çizim Yap</button>
+        <button onclick="clearDrawing()">Çizimi Temizle</button>
+        <button onclick="zoomIn()">Yakınlaştır</button>
+        <button onclick="zoomOut()">Uzaklaştır</button>
+        <button onclick="hideFullscreen()">Kapat</button>
+    </div>
+    <canvas id="drawingCanvas"></canvas>
+</div>
+
+
 
 {% endblock %}
+{% block javascripts %}
 
-<!-- <div class="content"></div> -->
+<script>
+    const fullscreenDiv = document.getElementById('fullscreenImg');
+    const fullscreenImg = document.getElementById('fullscreenImage');
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let zoomLevel = 1;
+
+    function showFullscreen(imgElement) {
+        fullscreenImg.src = imgElement.src;
+        fullscreenDiv.style.display = 'flex';
+        resizeCanvas();
+    }
+
+    function hideFullscreen() {
+        fullscreenDiv.style.display = 'none';
+        clearDrawing();
+        resetZoom();
+    }
+
+    function enableDrawing() {
+        canvas.style.display = 'block';
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+    }
+
+    function startDrawing(event) {
+        drawing = true;
+        ctx.beginPath();
+        ctx.moveTo(event.offsetX, event.offsetY);
+    }
+
+    function draw(event) {
+        if (!drawing) return;
+        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    function stopDrawing() {
+        drawing = false;
+        ctx.closePath();
+    }
+
+    function clearDrawing() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function resizeCanvas() {
+        canvas.width = fullscreenDiv.clientWidth;
+        canvas.height = fullscreenDiv.clientHeight;
+    }
+
+    function zoomIn() {
+        zoomLevel += 0.1;
+        fullscreenImg.style.transform = `scale(${zoomLevel})`;
+    }
+
+    function zoomOut() {
+        zoomLevel = Math.max(1, zoomLevel - 0.1);
+        fullscreenImg.style.transform = `scale(${zoomLevel})`;
+    }
+
+    function resetZoom() {
+        zoomLevel = 1;
+        fullscreenImg.style.transform = `scale(${zoomLevel})`;
+    }
+</script>
+{% endblock %}
